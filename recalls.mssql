@@ -1,0 +1,40 @@
+# This table dropped
+create table recalls (
+Report_Received_Date date not null,
+NHTSA_ID varchar(10) primary key,
+	Recall_link varchar(70) not null,
+	Manufacturer varchar(50) not null,
+	Subject varchar(50) not null,
+	component varchar(30) not null,
+	Mfr_Campaign_Number varchar(30) not null,
+	Recall_Type varchar(20) not null,
+	Potentially_Affected varchar(10) not null,
+	Recall_Description varchar(2000) not null,
+	consequence_Summary varchar(800) not null,
+	corrective_action varchar(2000) not null
+)
+
+# New table created as on 11/22/2023
+
+create table recalls (
+Report_Received_Date date not null,
+NHTSA_ID varchar(10) primary key,
+	Manufacturer varchar(50) not null,
+	Subject varchar(50) not null,
+	component varchar(30) not null,
+	Mfr_Campaign_Number varchar(30) not null,
+	Recall_Type varchar(20) not null,
+	Potentially_Affected varchar(10) not null,
+	Recall_Description varchar(2000) not null,
+	consequence_Summary varchar(800) not null,
+	corrective_action varchar(2000) not null
+)
+
+# Some queries I tried
+
+select * from recalls;
+
+select count(manufacturer) as Number_of_Manufacturers from recalls;
+
+select distinct component as Number_of_Components
+from recalls;
