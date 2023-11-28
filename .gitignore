@@ -3,3 +3,7 @@ config.py
 .ipynb_checkpoints
 
 __pycache__/
+
+.DS_Store
+templates/.DS_Store
+static/js/.DS_Store
