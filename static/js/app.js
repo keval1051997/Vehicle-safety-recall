@@ -3,33 +3,34 @@ const url = 'http://127.0.0.1:5000';
 function init(){
     // Calls first query
     d3.json(`${url}/api/v1.0/q1`).then(response => {
-        console.log(response);
+        //console.log(response);
         let components = response.component;
-        console.log('Component: ', components);
+        //console.log('Component: ', components);
         let totalAffected = response.sum_pa;
 
         // Data info
         let trace1 = {
-            x: components,
-            y: totalAffected,
+            x: components.slice(0,10),
+            y: totalAffected.slice(0,10),
             type: 'bar'
         };
         let data = [trace1];
 
         // Layout info
         let layout = {
-            title: 'Affected Vehicles by Component category (10 yr)',
-            height: 500,
-            width: 1200,
-            margin: {b:200}
+            title: 'Top 10, Number of Affected Vehicles<br>by Component category (10 yr)',
+            //height: 500,
+            //width: 1200,
+            margin: {b:100}
         };
 
         Plotly.newPlot('bar',data,layout);
 
     });
-// Second query and Pie chart 
-d3.json(`${url}/api/v1.0/q2`).then(response => {
-        console.log(response);
+
+    // Second query and Pie chart using chart.js
+    d3.json(`${url}/api/v1.0/q2`).then(response => {
+        //console.log(response);
         let manufacturers = response.manufacturer;
         let totalAffected = response.sum_pa;
         console.log('manufacturers: ', manufacturers,totalAffected);
@@ -76,7 +77,58 @@ d3.json(`${url}/api/v1.0/q2`).then(response => {
       
 
     });
+
+    // Calls third query
+    d3.json(`${url}/api/v1.0/q3`).then(response => {
+        // get unique year values from response for dropdown list
+        let yearArray = response.map(response => response.year);
+        let yearUnique = yearArray.filter((value, index) => yearArray.indexOf(value)===index);
+        console.log('Years: ', yearUnique);
+
+        // Create selector1 options and properties for first dropdown menu
+        let selector1 = d3.select('#selDataset1');
+        for (let i = 0; i < yearUnique.length; i++){
+            selector1.append('option').text(yearUnique[i]).property('value',yearUnique[i]);
+        };
+        let firstYear = yearUnique[0];
+        buildChart1(firstYear);
+
+    });
+
 };
 
+function buildChart1(value){
+    d3.json(`${url}/api/v1.0/q3`).then(response => {
+        let results = response.filter(response => response.year == value);
+        let components = results.map(result => result.component);
+        let totalAffected = results.map(result => result.sum_pa);
+
+        // Horizontal bar chart info
+        let bar_yticks = components.slice(0,10).reverse();
+        let bar_xticks = totalAffected.slice(0,10).reverse();
+        
+        let barData = [
+            {
+                y: bar_yticks,
+                x: bar_xticks,
+                type: 'bar',
+                orientation: 'h'
+            }
+        ];
+        let barLayout = {
+            title: `${value} Top 10 Recalls by Category`,
+            margin: {l:150},
+            yaxis: {
+                tickfont: {size: 10}
+            }
+        };
+
+        Plotly.newPlot('bar1', barData, barLayout);
+    });
+};
+
+function optionChanged(value){
+    buildChart1(value);
+}
 
 init();
