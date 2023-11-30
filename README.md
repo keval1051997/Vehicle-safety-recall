@@ -1,12 +1,12 @@
 # Vehicle Safety Recall (Automobile Industry)
 
-Team Members
-Jason Estrada
-Keval Mashru
-Kento Nakajima
-Muthukrishnan Hariram
-Paulin Thakore
-Taylor Chau
+Team Members:
+,Jason Estrada
+,Keval Mashru
+,Kento Nakajima
+,Muthukrishnan Hariram
+,Paulin Thakore
+,Taylor Chau
 
 # Approach 
     1. Pick/Clean Data - CSV further cleaned with Pandas (removing columns, nulls, unnecessary data)
@@ -16,7 +16,7 @@ Taylor Chau
     5. Created 5 Visualizations - Using different javascript libraries, D3.js, Plotly.js, Chart.js
         Bar Chart, Pie Chart, Polar Chart, Bar Chart (dropdown), Polar Chart, Time Series Chart
 
-# Our initial dataset (CSV) from Kaggle.com consisted of recalls since the year 1966. We cleaned the data further and focused solely on the last 10 years of recalls.
+# Our dataset (CSV) came from Kaggle.com, which consisted of recalls since 1966. We cleaned the data further and focused on the last 10 years of recalls.
 
 # https://www.kaggle.com/datasets/michaelbryantds/automobile-recalls-dataset (CSV file)
 
