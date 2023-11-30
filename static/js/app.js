@@ -3,28 +3,36 @@ const url = 'http://127.0.0.1:5000';
 function init(){
     // Calls first query
     d3.json(`${url}/api/v1.0/q1`).then(response => {
-        //console.log(response);
         let components = response.component;
-        //console.log('Component: ', components);
         let totalAffected = response.sum_pa;
 
-        // Data info
+        // Bar chart info
         let trace1 = {
             x: components.slice(0,10),
             y: totalAffected.slice(0,10),
-            type: 'bar'
+            type: 'bar',
+            marker: {color: '#647C90'}
         };
         let data = [trace1];
 
-        // Layout info
         let layout = {
             title: 'Top 10, Number of Affected Vehicles<br>by Component category (10 yr)',
-            //height: 500,
-            //width: 1200,
-            margin: {b:100}
+            margin: {b:100},
+            xaxis: {
+                tickfont: {size: 10}
+            }
         };
 
         Plotly.newPlot('bar',data,layout);
+
+        // Create selector2 options and properties for timeseries dataset for fourth query
+        compSort = components.sort();
+        let selector2 = d3.select('#selDataset2');
+        for (let i = 0; i < compSort.length; i++){
+            selector2.append('option').text(compSort[i]).property('value',compSort[i]);
+        };
+        let firstComponent = compSort[0];
+        buildChart2(firstComponent);
 
     });
 
@@ -34,8 +42,6 @@ function init(){
         let manufacturers = response.manufacturer;
         let totalAffected = response.sum_pa;
         console.log('manufacturers: ', manufacturers,totalAffected);
-        //const DATA_COUNT = 5;
-        
         
         // Data info
         const customColors = [
@@ -50,7 +56,7 @@ function init(){
         labels: manufacturers,
         datasets: [
             {
-            label: 'Potentially affected Manufacturers',
+            label: 'Potentially Affected Manufacturers',
             data: totalAffected,
             backgroundColor: customColors ,
             borderColor: customColors,
@@ -67,7 +73,7 @@ function init(){
                 plugins: {
                   title: {
                     display: true,
-                    text: 'Potentially affected Manufacturers',
+                    text: 'Potentially Affected Manufacturers (n=73613074)',
                     fontSize: 36
                   },
                   tooltip: {
@@ -87,10 +93,8 @@ function init(){
              },
                 
             },
-        });
-
-      
-});
+        });      
+    });
 
 
     // Calls third query
@@ -127,7 +131,8 @@ function buildChart1(value){
                 y: bar_yticks,
                 x: bar_xticks,
                 type: 'bar',
-                orientation: 'h'
+                orientation: 'h',
+                marker: {color: '#647C90'}
             }
         ];
         let barLayout = {
@@ -142,20 +147,17 @@ function buildChart1(value){
     });
 };
 
-function optionChanged(value){
+function option1Changed(value){
     buildChart1(value);
 }
 
-
-// Forth query and Polar chart using chart.js
-
+// Fourth query and Polar chart using chart.js
 d3.json(`${url}/api/v1.0/q4`).then(response => {
     console.log(response);
     let recall_type = response.component;
     let num_manufacturers = response.sum_pa;
     console.log('num_manufacturers: ',num_manufacturers)
     
-    //const DATA_COUNT = 5;
     var total = num_manufacturers.reduce(function (accumulator, currentValue) {
         return accumulator + currentValue;
     }, 0);
@@ -185,9 +187,6 @@ d3.json(`${url}/api/v1.0/q4`).then(response => {
         'rgb(255, 0, 0)'     // Red
     ]
 
-    
-
-
     const data = {
     labels: recall_type,
     datasets: [
@@ -209,7 +208,7 @@ d3.json(`${url}/api/v1.0/q4`).then(response => {
             plugins: {
               title: {
                 display: true,
-                text: '% of Major Components Recalled ',
+                text: '% of Major Components Recalled (excluding Air Bags)',
                 fontSize: 36
               },
               tooltip: {
@@ -231,5 +230,67 @@ d3.json(`${url}/api/v1.0/q4`).then(response => {
         },
     });
 });
+
+// Fifth query (time series)
+function buildChart2(value){
+    d3.json(`${url}/api/v1.0/q5`).then(response => {
+        let startDate = response[0].date_reported;
+        let endDate = response[response.length-1].date_reported;
+        let results = response.filter(response => response.component == value);
+        let date = results.map(result => result.date_reported);
+        let noVehicles = results.map(result => result.affected);
+        let components = results.map(result => result.component);
+        let mfr = results.map(result => result.manufacturer);
+        let subject = results.map(result => result.subject);
+        
+        // Create timeseries chart
+        let trace1 = {
+            x: date,
+            y: noVehicles,
+            type: 'scatter',
+            line: {color: '#de425b'},
+            name: value,
+            text: mfr,
+            hovertext: subject,
+            hovertemplate: '%{y}'+'<br>%{text}'+'<br>%{hovertext}<extra></extra>'
+        };
+        let data = [trace1];
+
+        let layout = {
+            title: 'Time Series, Affected Vehicles',
+            xaxis: {
+                autorange: true,
+                range: [startDate, endDate],
+                rangeselector: {buttons: [
+                    {
+                        count: 6,
+                        label: '6m',
+                        step: 'month',
+                        stepmode: 'backward'
+                    },
+                    {
+                        count: 1,
+                        label: '1y',
+                        step: 'year',
+                        stepmode: 'backward'
+                    },
+                    {step: 'all'}
+                ]},
+                rangeslider: {range: [startDate, endDate]},
+                type: 'date'
+            },
+            yaxis: {
+                autorange: true,
+                type: 'linear'
+            }
+        };
+
+        Plotly.newPlot('tseries', data, layout);
+    });
+};
+
+function option2Changed(value){
+    buildChart2(value);
+};
 
 init();

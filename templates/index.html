@@ -4,56 +4,61 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Vehicle Safety Recall Dashboard</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
     
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
+            <div class="col-md-12 text-center badge">
                 <h1>Vehicle Safety Recall</h1>
+                <h5>A review of NHTSA recall data from 2012-2023; <i><a href='https://www.kaggle.com/datasets/michaelbryantds/automobile-recalls-dataset' target='_blank' style="color:#d1cfcf">Dataset</a></i>
             </div>
         </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div id="bar"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="bar"></div>
+            </div>
+            <div class="col-md-6">
+                <div class="row" style="text-align: center;">
+                    <h6><b>Year</b></h6>
+                    <select id="selDataset1" onchange="option1Changed(this.value)"></select>
                 </div>
-                <div class="col-md-6">
-                    <div class="row" style="text-align: center;">
-                        <h6>Year</h6>
-                        <select id="selDataset1" onchange="optionChanged(this.value)"></select>
-                    </div>
-                    <div class="row">
-                        <div id="bar1"></div>
-                    </div>
+                <div class="row">
+                    <div id="bar1"></div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 well">
+                <div class="row" style="text-align: center;">
+                    <h5><b>Component</b></h5>
+                    <select id="selDataset2" onchange="option2Changed(this.value)"></select>
+                </div>
+                <div class="row">
+                    <div id="tseries"></div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <div style="margin-left:10%;height: 80%;width: 80%;">
                     <canvas id="pie" width="100" height="100"></canvas>
                 </div>
-
             </div>
             <div class="col-md-6">
                 <div style="margin-left:10%;height: 80%;width: 80%;">
                     <canvas id="polar" width="100" height="100"></canvas>
                 </div>
-
             </div>
-        </div>
-        <div class="row">
-            
         </div>
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="./static/js/app.js"></script>
-   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>  -->
-   <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 </body>
 </html>
