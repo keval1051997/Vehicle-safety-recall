@@ -73,7 +73,7 @@ function init(){
                 plugins: {
                   title: {
                     display: true,
-                    text: 'Potentially Affected Manufacturers (n=73613074)',
+                    text: 'Potentially Affected Vehicles by Major Manufacturers',
                     fontSize: 36
                   },
                   tooltip: {
