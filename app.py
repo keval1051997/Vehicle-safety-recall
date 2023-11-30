@@ -52,5 +52,18 @@ def q3():
     #return df.to_dict(orient='list')
     return df.to_json(orient='records')
 
+@app.route('/api/v1.0/q4')
+def q4():
+    # Sum of recalls (desc) grouped by 'Year' (desc) then 'Component'
+    # query = "select count(manufacturer) as num_manufacturers,recall_type \
+    # from recalls where recall_type != 'Vehicle' group by recall_type"
+    query = "select component, sum(cast(potentially_affected as float)) as sum_pa \
+from recalls where component != 'AIR BAGS'\
+group by component order by sum_pa desc LIMIT 7"
+    df = pd.read_sql(query, conn)
+    # returns a dictionary of lists
+    return df.to_dict(orient='list')
+    
+
 if __name__ == "__main__":
     app.run(debug=True)

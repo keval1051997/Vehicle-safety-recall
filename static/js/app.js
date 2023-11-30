@@ -30,7 +30,7 @@ function init(){
 
     // Second query and Pie chart using chart.js
     d3.json(`${url}/api/v1.0/q2`).then(response => {
-        //console.log(response);
+        console.log('q2 : ',response);
         let manufacturers = response.manufacturer;
         let totalAffected = response.sum_pa;
         console.log('manufacturers: ', manufacturers,totalAffected);
@@ -69,14 +69,29 @@ function init(){
                     display: true,
                     text: 'Potentially affected Manufacturers',
                     fontSize: 36
-                  }
+                  },
+                  tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            
+                            var dataset = context.dataset; 
+                            var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                            });
+                            var currentValue = dataset.data[context.dataIndex];
+                            var percentage = ((currentValue / total) * 100).toFixed(2);
+                            return currentValue + ' (' + percentage + '%)';
+                        }
+                    }
                 }
+             },
+                
             },
         });
 
       
+});
 
-    });
 
     // Calls third query
     d3.json(`${url}/api/v1.0/q3`).then(response => {
@@ -95,7 +110,7 @@ function init(){
 
     });
 
-};
+}
 
 function buildChart1(value){
     d3.json(`${url}/api/v1.0/q3`).then(response => {
@@ -130,5 +145,91 @@ function buildChart1(value){
 function optionChanged(value){
     buildChart1(value);
 }
+
+
+// Forth query and Polar chart using chart.js
+
+d3.json(`${url}/api/v1.0/q4`).then(response => {
+    console.log(response);
+    let recall_type = response.component;
+    let num_manufacturers = response.sum_pa;
+    console.log('num_manufacturers: ',num_manufacturers)
+    
+    //const DATA_COUNT = 5;
+    var total = num_manufacturers.reduce(function (accumulator, currentValue) {
+        return accumulator + currentValue;
+    }, 0);
+    console.log('total manufacturer: ',total)
+    var percent_manufacturers = num_manufacturers.map(function (value) {
+        return value * 100 / total;
+    });
+    console.log(percent_manufacturers)
+    
+    // Data info
+    const customColors = [
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+        'rgba(255, 159, 64, 0.8)',
+    ];
+
+    const customColors2 = [
+        'rgb(148, 0, 211)',  // Violet
+        'rgb(255, 127, 0)',  // Orange
+        'rgb(75, 0, 130)',   // Indigo
+        'rgb(0, 255, 0)',    // Green
+        'rgb(0, 0, 255)',    // Blue
+        'rgb(255, 255, 0)',  // Yellow
+        'rgb(255, 0, 0)'     // Red
+    ]
+
+    
+
+
+    const data = {
+    labels: recall_type,
+    datasets: [
+        {
+        label: '% of Major Components Recalled  ',
+        data: percent_manufacturers,
+        backgroundColor: customColors2 ,
+        borderColor: customColors2,
+        borderWidth: 1
+        }
+    ]
+    };
+
+    var ctx = document.getElementById('polar').getContext('2d');
+    var myPolarChart = new Chart(ctx, {
+        type: 'polarArea',
+        data: data,
+        options: {
+            plugins: {
+              title: {
+                display: true,
+                text: '% of Major Components Recalled ',
+                fontSize: 36
+              },
+              tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        
+                        var dataset = context.dataset; 
+                        var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
+                        return previousValue + currentValue;
+                        });
+                        var currentValue = dataset.data[context.dataIndex];
+                        var percentage = ((currentValue / total) * 100).toFixed(2);
+                        return currentValue + ' (' + percentage + '%)';
+                    }
+                }
+            }
+         },
+            
+        },
+    });
+});
 
 init();
