@@ -32,3 +32,5 @@ dropdown menu with unique years and to create a horizontal bar chart based on th
 Percentage of Major Components Recalled - The fourth function calls the fourth query, "q4", using D3.js and Chart.js, fetching data from the q4 API endpoint to create a polar chart.
 
 Time Series, Affected Vehicles by Vehicle Components - The fifth function calls the fifth query, "q5", using D3.js and Plotly, fetching data from Q5 API endpoint to create a time series chart.
+
+### [Link to video presentation](https://drive.google.com/file/d/12jOmg8-_TLU3KlUtmFTlC1QAnyT1ZNh0/view?usp=sharing)
